@@ -121,7 +121,6 @@ namespace par {
 #ifdef __PROFILE_WITH_BARRIER__
     MPI_Barrier(comm);
 #endif
-    PROF_SPLIT_COMM_2WAY_BEGIN
 
       MPI_Group  orig_group, new_group;
     int size;
@@ -176,7 +175,6 @@ namespace par {
     delete [] ranksIdle;
     ranksIdle = NULL;
 
-    PROF_SPLIT_COMM_2WAY_END
   }//end function
 
   int splitCommUsingSplittingRank(int splittingRank, MPI_Comm* new_comm,
@@ -184,7 +182,6 @@ namespace par {
 #ifdef __PROFILE_WITH_BARRIER__
     MPI_Barrier(comm);
 #endif
-    PROF_SPLIT_COMM_BEGIN
 
       MPI_Group  orig_group, new_group;
     int size;
@@ -222,7 +219,6 @@ namespace par {
     delete [] ranksIdle;
     ranksIdle = NULL;
 
-    PROF_SPLIT_COMM_END
   }//end function
 
   //create Comm groups and remove empty processors...
