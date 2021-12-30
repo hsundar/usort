@@ -167,13 +167,15 @@ namespace par {
     }
 
     /* Create new communicator */
-    MPI_Comm_create(comm, new_group, new_comm);
+    int ret_val = MPI_Comm_create(comm, new_group, new_comm);
 
     delete [] ranksActive;
     ranksActive = NULL;
     
     delete [] ranksIdle;
     ranksIdle = NULL;
+
+    return ret_val;
 
   }//end function
 
@@ -211,13 +213,15 @@ namespace par {
     }
 
     /* Create new communicator */
-    MPI_Comm_create(comm, new_group, new_comm);
+    int ret_val = MPI_Comm_create(comm, new_group, new_comm);
 
     delete [] ranksActive;
     ranksActive = NULL;
     
     delete [] ranksIdle;
     ranksIdle = NULL;
+
+    return ret_val;
 
   }//end function
 

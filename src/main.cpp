@@ -162,16 +162,21 @@ bool verify (std::vector<T>& in_, std::vector<T> &out_, MPI_Comm comm){
 
 template <class T>
 double time_sort(size_t N, MPI_Comm comm, DistribType dist_type){
+  std::cout << "Entering time_sort" << std::endl;
   int myrank, p;
 
   MPI_Comm_rank(comm, &myrank);
   MPI_Comm_size(comm,&p);
   int omp_p=omp_get_max_threads();
 
+  std::cout << "Num threads: " << omp_p << std::endl;
+  std::cout << "N: " << N << std::endl;
+
   // Generate random data
   std::vector<T> in(N);
 	if(dist_type==UNIF_DISTRIB){
-    #pragma omp parallel for
+    std::cout << "Uniform Dist" << std::endl;
+    // #pragma omp parallel for
     for(int j=0;j<omp_p;j++){
       unsigned int seed=j*p+myrank;
       size_t start=(j*N)/omp_p;
@@ -180,14 +185,15 @@ double time_sort(size_t N, MPI_Comm comm, DistribType dist_type){
         in[i]=rand_r(&seed);
       }
     }
-	} else if(dist_type==GAUSS_DISTRIB){
+	} else if(dist_type==GAUSS_DISTRIB) {
+    std::cout << "Gauss Dist" << std::endl;
     double e=2.7182818284590452;
     double log_e=log(e);
 
     unsigned int seed1=p+myrank;
     long mn = rand_r(&seed1);
 
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for(int j=0;j<omp_p;j++){
       unsigned int seed=j*p+myrank;
       size_t start=(j*N)/omp_p;
@@ -198,15 +204,23 @@ double time_sort(size_t N, MPI_Comm comm, DistribType dist_type){
       }
     }
 	}
- 
- std::vector<T> in_cpy=in;
+  std::cout << "Finished generating Data" << std::endl;
+
+  std::vector<T> in_cpy=in;
   std::vector<T> out;
 
+  std::cout << "Calling sort" << std::endl;
   // in=in_cpy;
-  SORT_FUNCTION<T>(in_cpy, comm);
+  SORT_FUNCTION<T>(in_cpy, out, comm);
+  // par::sampleSort(in_cpy, comm);
+  // std::sort(in_cpy.begin(), in_cpy.end());
+  
+  std::cout << "Finished sort" << std::endl;
+
 #ifdef __VERIFY__
   verify(in,in_cpy,comm);
 #endif
+
 
 #ifdef _PROFILE_SORT
 	total_sort.clear();
@@ -228,11 +242,12 @@ double time_sort(size_t N, MPI_Comm comm, DistribType dist_type){
   //Sort
   MPI_Barrier(comm);
   double wtime=-omp_get_wtime();
-  // SORT_FUNCTION<T>(in, out, comm);
-  SORT_FUNCTION<T>(in, comm);
+  SORT_FUNCTION<T>(in, out, comm);
+  // SORT_FUNCTION<T>(in, comm);
   MPI_Barrier(comm);
   wtime+=omp_get_wtime();
 
+  std::cout << "Done time_sort" << std::endl;
   return wtime;
 }
 
@@ -363,6 +378,8 @@ int main(int argc, char **argv){
   if (!myrank)
     std::cout << "sorting array of size " << num << " keys of type " << dtype << std::endl;
 
+
+  std::cout << "dtype: " << dtype << std::endl;
   // check if arguments are ok ...
     
   { // -- full size run  
@@ -380,6 +397,9 @@ int main(int argc, char **argv){
 				break;
       case 'l':
         ttt = time_sort<long>(N, MPI_COMM_WORLD,dist_type);
+        break;
+      default:
+        std::cout << "Unknown type" << std::endl;
         break;
     };
 #ifdef _PROFILE_SORT 			
@@ -404,8 +424,8 @@ int main(int argc, char **argv){
     }
   }
 
-	// MPI_Finalize();
-  // return 0;
+	MPI_Finalize();
+  return 0;
   
   for(int i=p; myrank<i && i>=min_np; i=i>>1) proc_group++;
   MPI_Comm_split(MPI_COMM_WORLD, proc_group, myrank, &comm);
