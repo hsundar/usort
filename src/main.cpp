@@ -162,20 +162,20 @@ bool verify (std::vector<T>& in_, std::vector<T> &out_, MPI_Comm comm){
 
 template <class T>
 double time_sort(size_t N, MPI_Comm comm, DistribType dist_type){
-  std::cout << "Entering time_sort" << std::endl;
+  // std::cout << "Entering time_sort" << std::endl;
   int myrank, p;
 
   MPI_Comm_rank(comm, &myrank);
   MPI_Comm_size(comm,&p);
   int omp_p=omp_get_max_threads();
 
-  std::cout << "Num threads: " << omp_p << std::endl;
-  std::cout << "N: " << N << std::endl;
+  // std::cout << "Num threads: " << omp_p << std::endl;
+  // std::cout << "N: " << N << std::endl;
 
   // Generate random data
   std::vector<T> in(N);
 	if(dist_type==UNIF_DISTRIB){
-    std::cout << "Uniform Dist" << std::endl;
+    // std::cout << "Uniform Dist" << std::endl;
     // #pragma omp parallel for
     for(int j=0;j<omp_p;j++){
       unsigned int seed=j*p+myrank;
@@ -186,7 +186,7 @@ double time_sort(size_t N, MPI_Comm comm, DistribType dist_type){
       }
     }
 	} else if(dist_type==GAUSS_DISTRIB) {
-    std::cout << "Gauss Dist" << std::endl;
+    // std::cout << "Gauss Dist" << std::endl;
     double e=2.7182818284590452;
     double log_e=log(e);
 
@@ -204,18 +204,18 @@ double time_sort(size_t N, MPI_Comm comm, DistribType dist_type){
       }
     }
 	}
-  std::cout << "Finished generating Data" << std::endl;
+  // std::cout << "Finished generating Data" << std::endl;
 
   std::vector<T> in_cpy=in;
   std::vector<T> out;
 
-  std::cout << "Calling sort" << std::endl;
+  // std::cout << "Calling sort" << std::endl;
   // in=in_cpy;
   SORT_FUNCTION<T>(in_cpy, out, comm);
   // par::sampleSort(in_cpy, comm);
   // std::sort(in_cpy.begin(), in_cpy.end());
   
-  std::cout << "Finished sort" << std::endl;
+  // std::cout << "Finished sort" << std::endl;
 
 #ifdef __VERIFY__
   verify(in,in_cpy,comm);
@@ -247,7 +247,7 @@ double time_sort(size_t N, MPI_Comm comm, DistribType dist_type){
   MPI_Barrier(comm);
   wtime+=omp_get_wtime();
 
-  std::cout << "Done time_sort" << std::endl;
+  // std::cout << "Done time_sort" << std::endl;
   return wtime;
 }
 
@@ -379,7 +379,7 @@ int main(int argc, char **argv){
     std::cout << "sorting array of size " << num << " keys of type " << dtype << std::endl;
 
 
-  std::cout << "dtype: " << dtype << std::endl;
+  // std::cout << "dtype: " << dtype << std::endl;
   // check if arguments are ok ...
     
   { // -- full size run  
