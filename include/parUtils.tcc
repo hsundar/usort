@@ -1874,8 +1874,8 @@ int sampleSort(std::vector<T>& arr, std::vector<T> & SortedElem, MPI_Comm comm){
   int npes;
   MPI_Comm_size(comm, &npes);
 
-  std::cout << "Entering sampleSort " << std::endl;
-  std::cout << "npes: " << npes << ", arr.size " << arr.size() << std::endl;
+  // std::cout << "Entering sampleSort " << std::endl;
+  // std::cout << "npes: " << npes << ", arr.size " << arr.size() << std::endl;
   assert(arr.size());
 
   if (npes == 1) {
@@ -1893,23 +1893,23 @@ int sampleSort(std::vector<T>& arr, std::vector<T> & SortedElem, MPI_Comm comm){
     return MPI_SUCCESS;      
 	}
   
-  std::cout << "Have more than 1 proc" << std::endl; 
+  // std::cout << "Have more than 1 proc" << std::endl; 
 
   std::vector<T>  splitters;
   std::vector<T>  allsplitters;
 
-  std::cout << "Getting rank" << std::endl;
+  // std::cout << "Getting rank" << std::endl;
   int myrank;
   MPI_Comm_rank(comm, &myrank);
-  std::cout << myrank << ": Got rank" << std::endl;
+  // std::cout << myrank << ": Got rank" << std::endl;
 
   DendroIntL nelem = arr.size();
   DendroIntL nelemCopy = nelem;
   DendroIntL totSize;
-  std::cout << myrank << ": Calling reduce " << std::endl;
+  // std::cout << myrank << ": Calling reduce " << std::endl;
   par::Mpi_Allreduce<DendroIntL>(&nelemCopy, &totSize, 1, MPI_SUM, comm);
 
-  std::cout << myrank << ": total size = " << std::endl;
+  // std::cout << myrank << ": total size = " << std::endl;
   DendroIntL npesLong = npes;
   const DendroIntL FIVE = 5;
 

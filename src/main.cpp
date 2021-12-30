@@ -402,7 +402,7 @@ int main(int argc, char **argv){
         std::cout << "Unknown type" << std::endl;
         break;
     };
-#ifdef _PROFILE_SORT 			
+ #ifdef _PROFILE_SORT 			
 		if (!myrank) {
 			std::cout << "---------------------------------------------------------------------------" << std::endl;
 		#ifndef KWICK
@@ -417,10 +417,11 @@ int main(int argc, char **argv){
 			std::cout << "---------------------------------------------------------------------------" << std::endl;
 		}
 		printResults(num_threads, MPI_COMM_WORLD);
-#endif
+ #endif
 		
     if(!myrank){
       tt[100*k+0]=ttt;
+      std::cout << "Finished sort in " << ttt << " seconds." << std::endl;
     }
   }
 
