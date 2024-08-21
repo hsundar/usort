@@ -3,6 +3,8 @@
 
 #include <mpi.h>
 #include <complex>
+#include <cstddef>
+
 
 /** 
   @file	dtypes.h
@@ -194,6 +196,7 @@ to this user-defined datatype.
             return datatype;
         }
     };
+
 
 } //end namespace
 

@@ -83,9 +83,9 @@ void omp_par::merge(T A_,T A_last,T B_,T B_last,T C_,int p,StrictWeakOrdering co
   #pragma omp parallel for
   for(int i=0;i<p;i++){
     T C=C_+split_indx_A[i]+split_indx_B[i];
-    //std::merge(A_+split_indx_A[i],A_+split_indx_A[i+1],B_+split_indx_B[i],B_+split_indx_B[i+1],C,comp);
+    std::merge(A_+split_indx_A[i],A_+split_indx_A[i+1],B_+split_indx_B[i],B_+split_indx_B[i+1],C,comp);     // FIXED
     //sse<_ValType>::merge(A_+split_indx_A[i],A_+split_indx_A[i+1],B_+split_indx_B[i],B_+split_indx_B[i+1],C);
-    std::merge(A_+split_indx_A[i],A_+split_indx_A[i+1],B_+split_indx_B[i],B_+split_indx_B[i+1],C);
+    // std::merge(A_+split_indx_A[i],A_+split_indx_A[i+1],B_+split_indx_B[i],B_+split_indx_B[i+1],C);
   }
   delete[] split_indx_A;
   delete[] split_indx_B;
@@ -147,7 +147,7 @@ void omp_par::merge_sort(T A,T A_last,StrictWeakOrdering comp){
   delete[] split;
   delete[] B;
 }
-
+// TODO: support merge_sort_ptrs with custom comparison function
 template <class T>
 void omp_par::merge_sort(T A,T A_last){
   typedef typename std::iterator_traits<T>::value_type _ValType;

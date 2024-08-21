@@ -262,11 +262,11 @@ namespace par {
       MPI_Barrier(comm);
 #endif
     
-#ifndef ALLTOALLV_FIX
-    return Mpi_Alltoallv
-        (sendbuf, sendcnts, sdispls, 
-         recvbuf, recvcnts, rdispls, comm);
-#else
+// #ifndef ALLTOALLV_FIX
+//     return Mpi_Alltoallv
+//         (sendbuf, sendcnts, sdispls, 
+//          recvbuf, recvcnts, rdispls, comm);
+// #else
 
       int npes, rank;
       MPI_Comm_size(comm, &npes);
@@ -322,7 +322,7 @@ namespace par {
       //Next send the messages. Do not send to self.
       for(int i = 0; i < rank; i++) {
         if(sendcnts[i] > 0) {
-          par::Mpi_Issend<T>( &(sendbuf[sdispls[i]]), sendcnts[i], i, 1,
+          par::Mpi_Isend<T>( &(sendbuf[sdispls[i]]), sendcnts[i], i, 1,
               comm, &(requests[commCnt]) );
           commCnt++;
         }
@@ -330,7 +330,7 @@ namespace par {
 
       for(int i = (rank + 1); i < npes; i++) {
         if(sendcnts[i] > 0) {
-          par::Mpi_Issend<T>( &(sendbuf[sdispls[i]]), sendcnts[i], 
+          par::Mpi_Isend<T>( &(sendbuf[sdispls[i]]), sendcnts[i], 
               i, 1, comm, &(requests[commCnt]) );
           commCnt++;
         }
@@ -352,7 +352,7 @@ namespace par {
       delete [] statuses;
 
       return MPI_SUCCESS;
-#endif
+// #endif
     }
 
 //*
@@ -1863,6 +1863,7 @@ namespace par {
 
 template<typename T>
 int sampleSort(std::vector<T>& arr, std::vector<T> & SortedElem, MPI_Comm comm){ 
+  // std::cout <<"using sample sort\n";
   #ifdef __PROFILE_WITH_BARRIER__
     MPI_Barrier(comm);
   #endif
@@ -1913,7 +1914,8 @@ int sampleSort(std::vector<T>& arr, std::vector<T> & SortedElem, MPI_Comm comm){
   DendroIntL npesLong = npes;
   const DendroIntL FIVE = 5;
 
-  if(totSize < (FIVE*npesLong*npesLong)) {
+  if(false) {
+  // if(totSize < (FIVE*npesLong*npesLong)) {
     if(!myrank) {
       std::cout <<" Using bitonic sort since totSize < (5*(npes^2)). totSize: " << totSize << " npes: "<<npes <<std::endl;
     }
